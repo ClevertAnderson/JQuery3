@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Record Management</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+  <style>
+    .error-input {
+      border: 1px solid red !important;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container mt-5">
+  <div class="row">
+    <div class="col-md-8">
+      <h2>Students School Records</h2>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Course</th>
+            <th>Section</th>
+            <th id="actionsHeader" style="display: none;">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="recordTableBody">
+        </tbody>
+      </table>
+    </div>
+
+    <div class="col-md-4">
+      <div class="form-group">
+        <label for="name" style="font-weight: bold;">Name</label>
+        <input type="text" class="form-control" id="name">
+      </div>
+      <div class="form-group">
+        <label for="course" style="font-weight: bold;">Course</label>
+        <input type="text" class="form-control" id="course">
+      </div>
+      <div class="form-group">
+        <label for="section" style="font-weight: bold;">Section</label>
+        <input type="text" class="form-control" id="section">
+      </div>
+      <button class="btn btn-primary" id="saveRecord" style="font-weight: bold;">Save Record</button>
+      <div id="message" class="mt-2"></div>
+    </div>
+  </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+<script>
+  $(document).ready(function () {
+    $('#saveRecord').on('click', function () {
+      $('#name, #course, #section').removeClass('error-input');
+
+      var name = $('#name').val();
+      var course = $('#course').val();
+      var section = $('#section').val();
+
+      if (name.trim() === '' || course.trim() === '' || section.trim() === '') {
+        showError('Please fill in all fields.');
+
+        if (name.trim() === '') {
+          $('#name').addClass('error-input');
+        }
+        if (course.trim() === '') {
+          $('#course').addClass('error-input');
+        }
+        if (section.trim() === '') {
+          $('#section').addClass('error-input');
+        }
+        
+        return;
+      }
+
+      clearMessage();
+
+      $('#recordTableBody').append(
+        '<tr>' +
+        '<td>' + name + '</td>' +
+        '<td>' + course + '</td>' +
+        '<td>' + section + '</td>' +
+        '<td><button class="btn btn-danger deleteRecord">DELETE</button></td>' +
+        '</tr>'
+      );
+
+      $('#actionsHeader').show();
+
+      showSuccess('Record saved successfully.');
+
+      $('#name').val('');
+      $('#course').val('');
+      $('#section').val('');
+    });
+
+    $('#recordTableBody').on('click', '.deleteRecord', function () {
+      $(this).closest('tr').remove();
+
+      if ($('#recordTableBody tr').length === 0) {
+        $('#actionsHeader').hide();
+      }
+
+      showSuccess('Record deleted successfully.');
+    });
+
+    function showSuccess(message) {
+      $('#message').html('<div class="alert alert-success">' + message + '</div>');
+      setTimeout(clearMessage, 5000);
+    }
+
+    function showError(message) {
+      $('#message').html('<div class="alert alert-danger">' + message + '</div>');
+      setTimeout(clearMessage, 5000);
+    }
+
+    function clearMessage() {
+      $('#message').html('');
+    }
+  });
+</script>
+
+</body>
+</html>
